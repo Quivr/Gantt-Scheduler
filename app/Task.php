@@ -22,4 +22,12 @@ class Task extends Model
     	return $this->hasMany('App\Task','master_task_id');
     }
 
+    public function dependencies(){
+        return $this->belongsToMany('App\Task','dependson', 'task_dependson_id', 'task_id');
+    }
+
+    public function dependson(){
+        return $this->belongsToMany('App\Task','dependson', 'task_id', 'task_dependson_id');
+    }
+
 }

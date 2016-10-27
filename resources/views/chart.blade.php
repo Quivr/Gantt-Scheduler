@@ -18,7 +18,7 @@
       var rows = new google.visualization.DataTable(jsonData);
 
       var options = {
-        height: rows.getNumberOfRows() * 40 + 30,
+        height: rows.getNumberOfRows() * 30 + 50,
         gantt: {
           trackHeight: 30
         }
@@ -31,7 +31,7 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
   <div id="chart_div"></div>
 </div>
 @endsection

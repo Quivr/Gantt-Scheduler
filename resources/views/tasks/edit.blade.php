@@ -2,15 +2,15 @@
 
 @section('content')
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Edit task</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('tasks.update', [$task->id])}}">
-                        <input type="hidden" name="_method" value="PUT">
-                        {{ csrf_field() }}
+    <div class="panel panel-default">
+        <div class="panel-heading">Edit task</div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" method="POST" action="{{ route('tasks.update', [$task->id])}}">
+                <input type="hidden" name="_method" value="PUT">
+                {{ csrf_field() }}
 
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
                             <label for="title" class="col-md-4 control-label">Title</label>
 
@@ -67,6 +67,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('startTime') ? ' has-error' : '' }}">
+                            <label for="startTime" class="col-md-4 control-label">start time</label>
+
+                            <div class="col-md-6">
+                                <input type="time" id="startTime" class="form-control" name="startTime" value="{{$task->startTime}}">
+
+                                @if ($errors->has('startTime'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('startTime') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('endDate') ? ' has-error' : '' }}">
                             <label for="endDate" class="col-md-4 control-label">end date</label>
 
@@ -80,6 +94,33 @@
                                 @endif
                             </div>
                         </div>
+
+                        <div class="form-group{{ $errors->has('endTime') ? ' has-error' : '' }}">
+                            <label for="endTime" class="col-md-4 control-label">end time</label>
+
+                            <div class="col-md-6">
+                                <input type="time" id="endTime" class="form-control" name="endTime" value="{{$task->endTime}}">
+
+                                @if ($errors->has('endTime'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('endTime') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
 
                         @if(isset($users))
                         <div class="form-group{{ $errors->has('manager') ? ' has-error' : '' }}">
@@ -158,19 +199,78 @@
                             </div>
                         </div>
                         @endif
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <div class="panel panel-default">
+        <div class="panel-heading">New dependency</div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" method="POST" action="{{ route('tasks.createDependency', [$task->id])}}">
+                {{ csrf_field() }}
+
+                <div class="form-group{{ $errors->has('manager') ? ' has-error' : '' }}">
+                    <label for="dependency" class="col-md-4 control-label">Task</label>
+
+                    <div class="col-md-6">
+                        <select id="dependency" class="form-control" name="dependency">
+                            <option></option>
+                            @if(isset($tasks))
+                                @foreach($tasks as $task_temp)
+                                    @if($task->id != $task_temp->id)
+                                        <option value="{{$task_temp->id}}">{{$task_temp->title}}</option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+
+                        @if ($errors->has('dependency'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('dependency') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    @if(isset($task->dependencies))
+        @foreach($task->dependencies as $dependency)
+            <div class="panel panel-default">
+                <div class="panel-heading">{{$dependency->title}}</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('tasks.deleteDependency', [$task->id, $dependency->id])}}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        {{ csrf_field() }}
+
+                        <p>start: {{$dependency->startDate}}</p>
+                        <p>end: {{$dependency->endDate}}</p>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Save
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-danger">
+                                    Delete
                                 </button>
                             </div>
                         </div>
+                        
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
+        @endforeach
+    @endif
+
 </div>
 @endsection

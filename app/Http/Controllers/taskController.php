@@ -19,16 +19,16 @@ class taskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::get();
+        $tasks = Task::orderBy('title')->get();
         return view('tasks.index', ['tasks'=> $tasks]);
     }
 
     public function indexData(){
 
         $rows = [];
-        $tasks = Task::with('subTasks')->with('masterTask')->with('resource')->get();
+        $tasks = Task::with('subTasks','resource')->get();
         $cols = [
-                ['id'=>'Task ID', 'label'=>'Task ID', 'type'=>'string'], 
+                ['id'=>'taskid', 'label'=>'Task ID', 'type'=>'string'], 
                 ['id'=>'Task Name','label'=>'Task Name','type'=>'string'],
                 ['id'=>'Resource', 'label'=>'Resource', 'type'=>'string'],
                 ['id'=>'Start Date','label'=>'Start Date', 'type'=>'date'],
@@ -38,15 +38,13 @@ class taskController extends Controller
                 ['id'=>'Dependencies','label'=>'Dependencies', 'type'=>'string']
                 ];
 
-        $resources = ['test1', 'test2'];
-
-
-
         foreach ($tasks as $task) {
             $startDate = date_parse($task->startDate);
             $startDate['month'] --;
+            $startTime = explode(":",$task->startTime);
             $endDate = date_parse($task->endDate);
             $endDate['month'] --;
+            $endTime = explode(":",$task->endTime);
             $row = ['c'=>[]];
             array_push($row['c'], ['v'=>$task->id]);
             array_push($row['c'], ['v'=>$task->title]);
@@ -54,14 +52,19 @@ class taskController extends Controller
                 array_push($row['c'], ['v'=>$task->resource->name]);
             else
                 array_push($row['c'], []);
-            array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",0,0,0,0)"]);
-            array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",0,0,0,0)"]);
+            array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
+            array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
             array_push($row['c'], []);
             array_push($row['c'], ['v'=>$task->percentcomplete]);
-            if(isset($task->masterTask))
-                array_push($row['c'], [$task->masterTask->id]);
-            else
+            if(!empty($task->dependencies)){
+                $temp = [];
+                foreach($task->dependencies as $dependency){
+                    array_push($temp, $dependency->id);
+                }
+                array_push($row['c'], ['v'=>implode(', ', $temp)]);
+            }else{
                 array_push($row['c'], []);
+            }
             array_push($rows, $row);
         }
 
@@ -139,7 +142,7 @@ class taskController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::findorfail($id);
+        $task = Task::with('dependencies')->findorfail($id);
         $users = User::get();
         $tasks = Task::get();
         $resources = Resource::get();
@@ -160,7 +163,9 @@ class taskController extends Controller
         $task->title = $request->title;
         $task->description = $request->description;
         $task->startDate = $request->startDate;
+        $task->startTime = $request->startTime;
         $task->endDate = $request->endDate;
+        $task->endTime = $request->endTime;
         $task->percentcomplete = $request->percentcomplete;
 
         if($request->has('manager')){
@@ -184,8 +189,46 @@ class taskController extends Controller
             $task->resource()->dissociate();
         }
 
+        if($request->has('dependency')){
+            $dependency = Task::findorfail($request->dependency);
+            $task->dependencies()->save($dependency);
+        }
+
         $task->save();
         return redirect()->route('tasks.show', [$task->id]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function createDependency(Request $request, $id)
+    {
+        $task = Task::findorfail($id);
+
+        if($request->has('dependency')){
+            $dependency = Task::findorfail($request->dependency);
+            $task->dependencies()->attach($dependency);
+        }
+
+        return redirect()->route('tasks.edit', [$task->id]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id1
+     * @param  int  $id2
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyDependency($id1, $id2){
+        $task = Task::findorfail($id1);
+        $task->dependencies()->detach($id2);
+
+        return redirect()->route('tasks.edit', [$task->id]);
     }
 
     /**
