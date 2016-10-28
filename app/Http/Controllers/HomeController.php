@@ -26,7 +26,7 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $works = Work::where('user_id', $user->id)->with('task')->orderby('started_at')->get();
+        $works = Work::where('user_id', $user->id)->with('task')->orderby('date', 'desc')->orderby('started_at', 'desc')->get();
         return view('home', ['works'=>$works]);
     }
 }

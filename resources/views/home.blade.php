@@ -14,7 +14,7 @@
 
             @if(isset($works))
             <div class="panel panel-default">
-                <div class="panel-heading">Your tasks</div>
+                <div class="panel-heading">Your logged hours</div>
 
                 <div class="panel-body">
                     <ul>
