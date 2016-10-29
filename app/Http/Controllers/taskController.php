@@ -27,7 +27,9 @@ class taskController extends Controller
     public function indexData(Request $request){
 
         if($request->has('start_date') && $request->has('end_date')){
-            $tasks = Task::whereRaw("startDate between '".$request->start_date."' and '".$request->end_date."'")->with('subTasks','resource')->get();
+            $tasks = Task::whereRaw("startDate between '".$request->start_date."' and '"."2020-01-01"."'")
+                            ->whereRaw("endDate between '"."2016-01-01"."' and '".$request->end_date."'")
+                            ->with('subTasks','resource')->get();
         }else{
             $tasks = Task::with('subTasks','resource')->get();
         }
