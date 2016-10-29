@@ -42,7 +42,9 @@ class workController extends Controller
     public function create()
     {
         $tasks = Task::orderBy('title')->get();
-        return view('work.create', ['tasks'=>$tasks]);
+        $users = User::get();
+        $user = Auth::user();
+        return view('work.create', ['tasks'=>$tasks, 'users'=>$users, 'currentuser'=>$user]);
     }
 
     /**
@@ -53,7 +55,11 @@ class workController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+        if(isset($request->user)){
+            $user = User::findorfail($request->user);
+        }else{
+            $user = Auth::user();
+        }
         $user->works()->attach([$request->task =>['started_at'=>$request->started_at,'ended_at'=>$request->ended_at, 'description'=>$request->description, 'date'=>$request->date]]);
         return redirect('/home');
     }

@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Create new task</div>
+                <div class="panel-heading">Create new log item</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('works.store')}}">
                         {{ csrf_field() }}
@@ -38,6 +38,29 @@
                                 @if ($errors->has('task'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('task') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('user') ? ' has-error' : '' }}">
+                            <label for="user" class="col-md-4 control-label">User</label>
+
+                            <div class="col-md-6">
+                                <select id="user" class="form-control" name="user">
+                                    <option></option>
+                                    @foreach($users as $user)
+                                        @if($user->id == $currentuser->id)
+                                            <option value="{{$user->id}}" selected>{{$user->name}}</option>
+                                        @else
+                                            <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('user'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('user') }}</strong>
                                     </span>
                                 @endif
                             </div>
