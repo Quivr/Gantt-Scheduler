@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Task;
 use App\User;
 use App\Resource;
+use DB;
 
 use App\Http\Requests;
 
@@ -23,10 +24,18 @@ class taskController extends Controller
         return view('tasks.index', ['tasks'=> $tasks]);
     }
 
-    public function indexData(){
+    public function indexData(Request $request){
+
+        if($request->has('start_date') && $request->has('end_date')){
+            $tasks = Task::whereRaw("startDate between '".$request->start_date."' and '"."2020-01-01"."'")
+                            ->whereRaw("endDate between '"."2016-01-01"."' and '".$request->end_date."'")
+                            ->with('subTasks','resource')->get();
+        }else{
+            $tasks = Task::with('subTasks','resource')->get();
+        }
+
 
         $rows = [];
-        $tasks = Task::with('subTasks','resource')->get();
         $cols = [
                 ['id'=>'taskid', 'label'=>'Task ID', 'type'=>'string'], 
                 ['id'=>'Task Name','label'=>'Task Name','type'=>'string'],
@@ -57,11 +66,11 @@ class taskController extends Controller
             array_push($row['c'], []);
             array_push($row['c'], ['v'=>$task->percentcomplete]);
             if(!empty($task->dependencies)){
-                $temp = [];
-                foreach($task->dependencies as $dependency){
-                    array_push($temp, $dependency->id);
-                }
-                array_push($row['c'], ['v'=>implode(', ', $temp)]);
+                // $temp = [];
+                // foreach($task->dependencies as $dependency){
+                //     array_push($temp, $dependency->id);
+                // }
+                // array_push($row['c'], ['v'=>implode(', ', $temp)]);
             }else{
                 array_push($row['c'], []);
             }
@@ -239,6 +248,7 @@ class taskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Task::destroy($id);
+        return back();
     }
 }

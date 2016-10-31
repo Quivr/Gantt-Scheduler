@@ -30,4 +30,8 @@ class User extends Authenticatable
     public function tasks(){
         return $this->hasMany('App\Task', 'manager_id');
     }
+
+    public function works(){
+        return $this->belongsToMany('App\Task','workson', 'user_id', 'task_id')->withPivot('started_at', 'ended_at');
+    }
 }
