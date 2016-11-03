@@ -55,6 +55,8 @@
         <label for="end_date">End date</label>
         <input type="date" class="form-control" id="end_date" value="2017-01-01">
 
+        <label for="resource"></label>
+
         <button id="submitbutton" class="btn btn-primary">Send</button>
       </div>
     </div>
