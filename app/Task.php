@@ -31,7 +31,7 @@ class Task extends Model
     }
 
     public function workedon(){
-        return $this->belongsToMany('App\Task','workson', 'task_id', 'user_id')->withPivot('started_at', 'ended_at');
+        return $this->belongsToMany('App\Task','workson', 'task_id', 'user_id')->withPivot('started_at', 'ended_at', 'id');
     }
 
 }

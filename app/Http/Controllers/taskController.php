@@ -20,8 +20,9 @@ class taskController extends Controller
      */
     public function index()
     {
+        $resources = Resource::with('tasks')->get();
         $tasks = Task::orderBy('title')->get();
-        return view('tasks.index', ['tasks'=> $tasks]);
+        return view('tasks.index', ['resources'=>$resources]);
     }
 
     public function indexData(Request $request){

@@ -2,9 +2,10 @@
 
 @section('content')
 <div class="container">
-    @if(isset($tasks))
+    @foreach($resources as $resource)
+        <h2>{{$resource->name}}</h2>
         <ul class="list-group">
-                @foreach($tasks as $task)
+                @foreach($resource->tasks as $task)
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-sm-8"><a href="{{route('tasks.show', [$task->id])}}">{{$task->title}}</a></div>
@@ -20,8 +21,6 @@
                 </li>
                 @endforeach
         </ul>
-    @else
-    <h1>No tasks found</h1>
-    @endif
+    @endforeach
 </div>
 @endsection

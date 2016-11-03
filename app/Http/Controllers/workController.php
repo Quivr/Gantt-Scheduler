@@ -30,8 +30,10 @@ class workController extends Controller
      */
     public function index()
     {
-        $works = Work::with('task', 'user')->orderBy('date')->orderBy('started_at')->get();
-        return view('work.index', ['works'=>$works]);
+        $users = User::with(['works' => function ($query) {
+                            $query->orderBy('date', 'desc')->orderBy('started_at', 'desc');
+                        }])->get();
+        return view('work.index', ['users'=>$users]);
     }
 
     /**
