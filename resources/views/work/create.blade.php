@@ -70,7 +70,7 @@
                             <label for="started_at" class="col-md-4 control-label">Started At</label>
 
                             <div class="col-md-6">
-                                <input type="time" id="started_at" class="form-control" name="started_at" value="{{ old('started_at') }}">
+                                <input type="time" id="started_at" class="form-control" name="started_at" value="{{ date('H:i',time()+60*60) }}">
 
                                 @if ($errors->has('started_at'))
                                     <span class="help-block">
@@ -84,7 +84,7 @@
                             <label for="ended" class="col-md-4 control-label">Ended At</label>
 
                             <div class="col-md-6">
-                                <input type="time" id="ended_at" class="form-control" name="ended_at" value="{{ old('ended_at') }}">
+                                <input type="time" id="ended_at" class="form-control" name="ended_at" value="{{ date('H:i',time()+60*60) }}">
 
                                 @if ($errors->has('ended_at'))
                                     <span class="help-block">
@@ -98,7 +98,7 @@
                             <label for="date" class="col-md-4 control-label">Date</label>
 
                             <div class="col-md-6">
-                                <input type="date" id="date" class="form-control" name="date" value="{{ old('date') }}">
+                                <input type="date" id="date" class="form-control" name="date" value="{{ date('Y-m-j') }}">
 
                                 @if ($errors->has('date'))
                                     <span class="help-block">
