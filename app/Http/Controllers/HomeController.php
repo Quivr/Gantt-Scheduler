@@ -30,12 +30,14 @@ class HomeController extends Controller
         $works = Work::where('user_id', $user->id)->with('task')->orderby('date', 'desc')->orderby('started_at', 'desc')->get();
         $weeks = [];
         foreach ($works as $work) {
+            $work['duration'] = abs(strtotime($work->started_at) - strtotime($work->ended_at));
             $date = new DateTime($work->date);
             $week = $date->format("W");
             if(isset($weeks[$week])){
-                array_push($weeks[$week], $work);
+                array_push($weeks[$week]["works"], $work);
+                $weeks[$week]["duration"] = $weeks[$week]["duration"]+$work->duration;
             }else{
-                $weeks[$week] = [$work];
+                $weeks[$week] = ["works"=>[$work],"duration"=>$work->duration];
             }
         }
         return view('home', ['weeks'=>$weeks]);
