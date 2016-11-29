@@ -6,7 +6,11 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">{{$work->task->title}}</div>
+                @if(isset($work->task))
+                    <div class="panel-heading">{{$work->task->title}}</div>
+                @else
+                    <div class="panel-heading">Geen taak</div>
+                @endif
 
                 <div class="panel-body">
                     {{$work->description}} <br>

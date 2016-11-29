@@ -76,8 +76,12 @@
                                 <select id="task" class="form-control" name="task">
                                     <option></option>
                                     @foreach($tasks as $task)
-                                        @if($work->task->id == $task->id)
-                                            <option value="{{$task->id}}" selected>{{$task->title}}</option>
+                                        @if(isset($work->task))
+                                            @if($work->task->id == $task->id)
+                                                <option value="{{$task->id}}" selected>{{$task->title}}</option>
+                                            @else
+                                                <option value="{{$task->id}}">{{$task->title}}</option>
+                                            @endif
                                         @else
                                             <option value="{{$task->id}}">{{$task->title}}</option>
                                         @endif

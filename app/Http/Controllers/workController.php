@@ -66,6 +66,22 @@ class workController extends Controller
         return redirect('/home');
     }
 
+    public function getWeeklyHoursByUser($id){
+        $user = User::findorfail($id);
+
+        $weekStart = new DateTime("2016-10-03");
+        $weekEnd = new DateTime('2016-10-10');
+        $today = new DateTime();
+        $i = 1;
+        while($weekStart < $today){
+            $hours = $user->works()->whereRaw("date between '".DateTime::fomat($weekStart)."' and '".DateTime::fomat($weekEnd)."'")->sum('workeson.ended_at') -
+                    $user->works()->whereRaw("date between '".DateTime::fomat($weekStart)."' and '".DateTime::fomat($weekEnd)."'")->sum('workeson.started_at');
+
+            $weekStart->modify("+1 week");
+            $weekEnd->modify("+1 week");
+        }
+    }
+
     /**
      * Display the specified resource.
      *
