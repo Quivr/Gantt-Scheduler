@@ -6,6 +6,7 @@
     google.charts.load('current', {'packages':['gantt']});
     google.charts.setOnLoadCallback(setupChart);
     var chart;
+    var data;
 
     function setupChart(){
       chart = new google.visualization.Gantt(document.getElementById('chart_div'));
@@ -25,7 +26,7 @@
           async: false
           }).responseText;
 
-      var data = new google.visualization.DataTable(jsonData);
+      data = new google.visualization.DataTable(jsonData);
 
       var options = {
         height: data.getNumberOfRows() * 30 + 50,
@@ -35,9 +36,20 @@
       };
 
       chart.draw(data, options);
+
+      google.visualization.events.addListener(chart, 'select', selectHandler);
     }
 
     $('#submitbutton').click(drawChart);
+
+    // The selection handler.
+    // Loop through all items in the selection and concatenate
+    // a single message from all of them.
+    function selectHandler() {
+        var selection = chart.getSelection();
+        //selection[0].row]
+        window.location = "{{url('tasks')}}"+"/"+data.getValue(selection[0].row,0)+"/edit";
+    }
   </script>
 @endsection
 
