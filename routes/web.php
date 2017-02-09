@@ -20,6 +20,7 @@ Auth::routes();
 
 Route::get('/deploy', 'Server@deploy');
 
+Route::resource('weekreports', 'WeekreportController');
 Route::resource('tasks', 'taskController');
 Route::resource('users', 'UserController');
 Route::resource('resources', 'resourceController');

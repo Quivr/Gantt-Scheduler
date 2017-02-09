@@ -42,7 +42,7 @@
                             <label for="startDate" class="col-md-4 control-label">start date</label>
 
                             <div class="col-md-6">
-                                <input type="date" id="startDate" class="form-control" name="startDate" value="{{ old('startDate') }}">
+                                <input type="date" id="startDate" class="form-control" name="startDate" value="{{ date('Y-m-d')}}">
 
                                 @if ($errors->has('startDate'))
                                     <span class="help-block">
@@ -56,7 +56,7 @@
                             <label for="endDate" class="col-md-4 control-label">end date</label>
 
                             <div class="col-md-6">
-                                <input type="date" id="endDate" class="form-control" name="endDate" value="{{ old('endDate') }}">
+                                <input type="date" id="endDate" class="form-control" name="endDate" value="{{ date('Y-m-d') }}">
 
                                 @if ($errors->has('endDate'))
                                     <span class="help-block">

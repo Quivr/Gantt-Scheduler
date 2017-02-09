@@ -32,7 +32,7 @@ class HomeController extends Controller
         foreach ($works as $work) {
             $work['duration'] = abs(strtotime($work->started_at) - strtotime($work->ended_at));
             $date = new DateTime($work->date);
-            $week = $date->format("W");
+            $week = $date->format("W")-6;
             if(isset($weeks[$week])){
                 array_push($weeks[$week]["works"], $work);
                 $weeks[$week]["duration"] = $weeks[$week]["duration"]+$work->duration;

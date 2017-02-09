@@ -104,6 +104,13 @@ class taskController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'title' => 'required|unique:tasks',
+            'startDate' => 'required',
+            'endDate' => 'required',
+            'resource' => 'required'
+        ]);
+
         $task = new Task;
 
         $task->title = $request->title;

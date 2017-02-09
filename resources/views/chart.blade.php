@@ -50,10 +50,10 @@
     <div class="col-sm-3 col-lg-2">
       <div class="form-group">
         <label for="start_date">Start date</label>
-        <input type="date" class="form-control" id="start_date" value="2016-10-03">
+        <input type="date" class="form-control" id="start_date" value="2017-01-01">
 
         <label for="end_date">End date</label>
-        <input type="date" class="form-control" id="end_date" value="2017-01-01">
+        <input type="date" class="form-control" id="end_date" value="2018-01-01">
 
         <label for="resource"></label>
 

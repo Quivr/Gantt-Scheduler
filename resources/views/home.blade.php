@@ -13,12 +13,24 @@
             </div>
 
             <div class="panel panel-default">
+                <div class="panel-heading">Weekoverzicht</div>
+
+                <div class="panel-body">
+                    @if(isset($weeks))
+                        @foreach($weeks as $key=>$week)
+                            <p>Week {{$key}}: <strong>{{($week["duration"]-$week["duration"]%3600)/3600}}{{gmdate(":i:s", $week["duration"])}}</strong></p>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+
+            <div class="panel panel-default">
                 <div class="panel-heading">Your logged hours</div>
 
                 <div class="panel-body">
                     @if(isset($weeks))
                         @foreach($weeks as $key=>$week)
-                        Week {{$key}}, totaal gewerkte uren: <strong>{{gmdate("H:i:s", $week["duration"])}}</strong>
+                        Week {{$key}}, totaal gewerkte uren: <strong>{{($week["duration"]-$week["duration"]%3600)/3600}}{{gmdate(":i:s", $week["duration"])}}</strong>
                         <ul class="list-group">
                             @foreach($week["works"] as $work)
                             <li class="list-group-item">

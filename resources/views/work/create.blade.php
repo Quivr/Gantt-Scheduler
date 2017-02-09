@@ -10,39 +10,6 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('works.store')}}">
                         {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
-                            <label for="description" class="col-md-4 control-label">Description</label>
-
-                            <div class="col-md-6">
-                                <textarea id="description" class="form-control" name="description">{{ old('description') }}</textarea>
-
-                                @if ($errors->has('description'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('description') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('task') ? ' has-error' : '' }}">
-                            <label for="task" class="col-md-4 control-label">Task</label>
-
-                            <div class="col-md-6">
-                                <select id="task" class="form-control" name="task">
-                                    <option></option>
-                                    @foreach($tasks as $task)
-                                        <option value="{{$task->id}}">{{$task->title}}</option>
-                                    @endforeach
-                                </select>
-
-                                @if ($errors->has('task'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('task') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
                         <div class="form-group{{ $errors->has('user') ? ' has-error' : '' }}">
                             <label for="user" class="col-md-4 control-label">User</label>
 
@@ -98,7 +65,7 @@
                             <label for="date" class="col-md-4 control-label">Date</label>
 
                             <div class="col-md-6">
-                                <input type="date" id="date" class="form-control" name="date" value="{{ date('Y-m-j') }}">
+                                <input type="date" id="date" class="form-control" name="date" value="{{ date('Y-m-d') }}">
 
                                 @if ($errors->has('date'))
                                     <span class="help-block">
@@ -108,7 +75,38 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
+                            <label for="description" class="col-md-4 control-label">Description</label>
 
+                            <div class="col-md-6">
+                                <textarea id="description" class="form-control" name="description">{{ old('description') }}</textarea>
+
+                                @if ($errors->has('description'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('description') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('task') ? ' has-error' : '' }}">
+                            <label for="task" class="col-md-4 control-label">Task</label>
+
+                            <div class="col-md-6">
+                                <select id="task" class="form-control" name="task">
+                                    <option></option>
+                                    @foreach($tasks as $task)
+                                        <option value="{{$task->id}}">{{$task->title}}</option>
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('task'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('task') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

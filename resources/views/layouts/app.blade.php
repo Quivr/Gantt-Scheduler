@@ -65,6 +65,13 @@
                                 <li><a href="{{route('resources.create')}}">Create new resource</a></li>
                             </ul>
                         </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Report<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{route('weekreports.index')}}">Index</a></li>
+                                <li><a href="{{route('weekreports.create')}}">Create</a></li>
+                            </ul>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
