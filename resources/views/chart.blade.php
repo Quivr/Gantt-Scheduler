@@ -18,6 +18,7 @@
       var dates = {};
       dates.start_date = $('#start_date').val();
       dates.end_date = $('#end_date').val();
+      dates.department = $('#department').val();
 
       var jsonData = $.ajax({
           url: "{{route('tasks.data')}}",
@@ -31,7 +32,12 @@
       var options = {
         height: data.getNumberOfRows() * 30 + 50,
         gantt: {
-          trackHeight: 30
+          trackHeight: 30,
+          criticalPathEnabled: true,
+          criticalPathStyle: {
+            stroke: '#e64a19',
+            strokeWidth: 5
+          }
         }
       };
 
@@ -54,6 +60,12 @@
 @endsection
 
 @section('content')
+<?php 
+  $date1 = date('Y-m-d');
+  $date = new DateTime($date1);
+  $date->add(new DateInterval('P4W')); // P2W means period of 4 weeks
+  $date2 = $date->format('Y-m-d');
+?>
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-9 col-lg-10">
@@ -61,13 +73,19 @@
     </div>
     <div class="col-sm-3 col-lg-2">
       <div class="form-group">
+        <label for="department">Department</label>
+        <select name="department" id="department" class="form-control">
+          <option value="-1">Show all</option>
+          @foreach ($departments as $department)
+            <option value="{{$department->id}}">{{$department->name}}</option>
+          @endforeach
+        </select>
+        
         <label for="start_date">Start date</label>
-        <input type="date" class="form-control" id="start_date" value="2017-01-01">
+        <input name="start_date" type="date" class="form-control" id="start_date" value="{{$date1}}">
 
         <label for="end_date">End date</label>
-        <input type="date" class="form-control" id="end_date" value="2018-01-01">
-
-        <label for="resource"></label>
+        <input name="end_date" type="date" class="form-control" id="end_date" value="{{$date2}}">
 
         <button id="submitbutton" class="btn btn-primary">Send</button>
       </div>

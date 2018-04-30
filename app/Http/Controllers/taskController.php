@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Task;
 use App\User;
 use App\Resource;
+use App\Department;
 use DB;
 
 use App\Http\Requests;
@@ -27,13 +28,19 @@ class taskController extends Controller
 
     public function indexData(Request $request){
 
+        $query = Task::query();
+
         if($request->has('start_date') && $request->has('end_date')){
-            $tasks = Task::whereRaw("startDate between '".$request->start_date."' and '"."2020-01-01"."'")
-                            ->whereRaw("endDate between '"."2016-01-01"."' and '".$request->end_date."'")
-                            ->with('subTasks','resource')->get();
-        }else{
-            $tasks = Task::with('subTasks','resource')->get();
+            $query = $query->whereRaw("(startDate between '".$request->start_date."' and '".$request->end_date."' OR
+            endDate between '".$request->start_date."' and '".$request->end_date."')")
+                           ->with('subTasks','resource');
         }
+
+        if($request->has('department') && $request->department != -1){
+            $query = $query->where('department_id', $request->department);
+        }
+
+        $tasks = $query->get();
 
 
         $rows = [];
@@ -48,6 +55,9 @@ class taskController extends Controller
                 ['id'=>'Dependencies','label'=>'Dependencies', 'type'=>'string']
                 ];
 
+
+        $extratasks = [];
+
         foreach ($tasks as $task) {
             $startDate = date_parse($task->startDate);
             $startDate['month'] --;
@@ -58,8 +68,8 @@ class taskController extends Controller
             $row = ['c'=>[]];
             array_push($row['c'], ['v'=>$task->id]);
             array_push($row['c'], ['v'=>$task->title]);
-            if(isset($task->resource))
-                array_push($row['c'], ['v'=>$task->resource->name]);
+            if(isset($task->department))
+                array_push($row['c'], ['v'=>$task->department->name]);
             else
                 array_push($row['c'], []);
             array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
@@ -67,15 +77,40 @@ class taskController extends Controller
             array_push($row['c'], []);
             array_push($row['c'], ['v'=>$task->percentcomplete]);
             if(!empty($task->dependencies)){
-                // $temp = [];
-                // foreach($task->dependencies as $dependency){
-                //     array_push($temp, $dependency->id);
-                // }
-                // array_push($row['c'], ['v'=>implode(', ', $temp)]);
+                $temp = [];
+                foreach($task->dependencies as $dependency){
+                    array_push($temp, $dependency->id);
+                    array_push($extratasks, $dependency);
+                }
+                array_push($row['c'], ['v'=>implode(', ', $temp)]);
             }else{
                 array_push($row['c'], []);
             }
             array_push($rows, $row);
+        }
+
+        foreach($extratasks as $task){
+            if(!$tasks->contains($task->id)){
+                $startDate = date_parse($task->startDate);
+                $startDate['month'] --;
+                $startTime = explode(":",$task->startTime);
+                $endDate = date_parse($task->endDate);
+                $endDate['month'] --;
+                $endTime = explode(":",$task->endTime);
+                $row = ['c'=>[]];
+                array_push($row['c'], ['v'=>$task->id]);
+                array_push($row['c'], ['v'=>$task->title]);
+                if(isset($task->resource))
+                    array_push($row['c'], ['v'=>$task->resource->name]);
+                else
+                    array_push($row['c'], []);
+                array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
+                array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
+                array_push($row['c'], []);
+                array_push($row['c'], ['v'=>$task->percentcomplete]);
+                array_push($row['c'], []);
+                array_push($rows, $row);
+            }
         }
 
         $data = ['cols'=>$cols, 'rows'=>$rows];
@@ -93,7 +128,8 @@ class taskController extends Controller
         $tasks = Task::get();
         $users = User::get();
         $resources = Resource::get();
-        return view('tasks.create', ['tasks'=>$tasks, 'users'=>$users, 'resources'=>$resources]);
+        $departments = Department::get();
+        return view('tasks.create', ['tasks'=>$tasks, 'users'=>$users, 'resources'=>$resources, 'departments'=>$departments]);
     }
 
     /**
@@ -135,6 +171,11 @@ class taskController extends Controller
             $task->resource()->associate($resource);
         }
 
+        if($request->has('department')){
+            $department = Department::findorfail($request->department);
+            $task->department()->associate($department);
+        }
+
         $task->save();
         return redirect()->route('tasks.show', [$task->id]);
     }
@@ -147,7 +188,7 @@ class taskController extends Controller
      */
     public function show($id)
     {
-        $task = Task::with('manager')->findorfail($id);
+        $task = Task::with('manager', 'resource', 'department')->findorfail($id);
         return view('tasks.show', ['task'=>$task]);
     }
 
@@ -163,7 +204,8 @@ class taskController extends Controller
         $users = User::get();
         $tasks = Task::get();
         $resources = Resource::get();
-        return view('tasks.edit', ['task'=>$task, 'users'=>$users, 'tasks'=>$tasks, 'resources'=>$resources]);
+        $departments = Department::get();
+        return view('tasks.edit', ['task'=>$task, 'users'=>$users, 'tasks'=>$tasks, 'resources'=>$resources, 'departments'=>$departments]);
     }
 
     /**
@@ -209,6 +251,11 @@ class taskController extends Controller
         if($request->has('dependency')){
             $dependency = Task::findorfail($request->dependency);
             $task->dependencies()->save($dependency);
+        }
+
+        if($request->has('department')){
+            $department = Department::findorfail($request->department);
+            $task->department()->associate($department);
         }
 
         $task->save();
@@ -257,6 +304,6 @@ class taskController extends Controller
     public function destroy($id)
     {
         Task::destroy($id);
-        return back();
+        return redirect()->route('tasks.index');
     }
 }

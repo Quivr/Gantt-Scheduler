@@ -14,6 +14,10 @@ class Task extends Model
     	return $this->belongsTo('App\Resource', 'resource_id');
     }
 
+    public function department(){
+    	return $this->belongsTo('App\Department', 'department_id');
+    }
+
     public function masterTask(){
     	return $this->belongsTo('App\Task', 'master_task_id');
     }

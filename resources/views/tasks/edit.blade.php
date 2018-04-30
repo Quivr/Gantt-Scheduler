@@ -199,8 +199,39 @@
                             </div>
                         </div>
                         @endif
+
+                        @if(isset($departments))
+                        <div class="form-group{{ $errors->has('deparment') ? ' has-error' : '' }}">
+                            <label for="department" class="col-md-4 control-label">department</label>
+
+                            <div class="col-md-6">
+                                <select id="department" class="form-control" name="department">
+                                    <option></option>
+                                    @foreach($departments as $department)
+                                        @if($task->department_id == $department->id)
+                                            <option value="{{$department->id}}" selected>{{$department->name}}</option>
+                                        @else
+                                            <option value="{{$department->id}}">{{$department->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('department'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('department') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
+            </form>
+            
+            <form class="form-horizontal" role="form" method="POST" action="{{ route('tasks.destroy', [$task->id])}}">
+                <input type="hidden" name="_method" value="DELETE">
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
         </div>
     </div>

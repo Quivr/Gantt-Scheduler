@@ -6,14 +6,19 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">{{$task->title}}</div>
+                <div class="panel-heading">
+                    {{$task->title}}
+                    <a class="pull-right" href="{{route('tasks.edit', [$task->id])}}">
+                        Edit
+                    </a>
+                </div>
 
                 <div class="panel-body">
                     {{$task->description}} <br>
                     Start: {{$task->startDate}} <br>
                     End: {{$task->endDate}} <br>
                     @if(isset($task->manager))
-                    Manager: <a href="{{route('users.show', [$task->manager->id])}}">{{$task->manager->name}}</a>
+                        Manager: <a href="{{route('users.show', [$task->manager->id])}}">{{$task->manager->name}}</a>
                     @endif
                 </div>
             </div>

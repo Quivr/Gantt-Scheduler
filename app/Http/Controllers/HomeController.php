@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Work;
 use DateTime;
+use App\Department;
 
 class HomeController extends Controller
 {
@@ -26,7 +27,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        return view('home');
+        $departments = Department::all();
+        return view('chart', ['departments'=>$departments]);
     }
 }
