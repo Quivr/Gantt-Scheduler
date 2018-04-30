@@ -31,6 +31,6 @@ class MakeRelations extends Migration
      */
     public function down()
     {
-        //
+        //TODO
     }
 }

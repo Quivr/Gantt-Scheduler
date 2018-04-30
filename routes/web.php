@@ -18,13 +18,12 @@ Route::get('/', function(){
 
 Auth::routes();
 
-Route::get('/deploy', 'Server@deploy');
-
 Route::resource('weekreports', 'WeekreportController');
 Route::resource('tasks', 'taskController');
 Route::resource('users', 'UserController');
 Route::resource('resources', 'resourceController');
-Route::resource('works', 'workController');
+Route::resource('departments', 'departmentController');
+
 Route::post('tasks/{id}/dependency', 'taskController@createDependency')->name('tasks.createDependency');
 Route::delete('dependencies/{id1}/{id2}', 'taskController@destroyDependency')->name('tasks.deleteDependency');
 

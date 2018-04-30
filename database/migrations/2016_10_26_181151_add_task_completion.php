@@ -25,6 +25,6 @@ class AddTaskCompletion extends Migration
      */
     public function down()
     {
-        //
+        //TODO
     }
 }

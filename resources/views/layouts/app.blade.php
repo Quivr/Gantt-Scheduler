@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Team Wit</title>
+    <title>Schedule-app</title>
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
@@ -36,7 +36,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        Team white
+                        Schedule App
                     </a>
                 </div>
 
@@ -44,13 +44,6 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         <li><a href="{{url('home')}}">Home</a></li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Log Hours<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{{route('works.index')}}">Index</a></li>
-                                <li><a href="{{route('works.create')}}">New log item</a></li>
-                            </ul>
-                        </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tasks<span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -66,10 +59,10 @@
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Report<span class="caret"></span></a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Department<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{route('weekreports.index')}}">Index</a></li>
-                                <li><a href="{{route('weekreports.create')}}">Create</a></li>
+                                <li><a href="{{route('departments.index')}}">Index</a></li>
+                                <li><a href="{{route('departments.create')}}">Create</a></li>
                             </ul>
                         </li>
                     </ul>

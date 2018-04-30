@@ -30,8 +30,4 @@ class Task extends Model
         return $this->belongsToMany('App\Task','dependson', 'task_id', 'task_dependson_id');
     }
 
-    public function workedon(){
-        return $this->belongsToMany('App\Task','workson', 'task_id', 'user_id')->withPivot('started_at', 'ended_at', 'id');
-    }
-
 }

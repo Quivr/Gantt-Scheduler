@@ -26,6 +26,6 @@ class AddTime extends Migration
      */
     public function down()
     {
-        //
+        //TODO
     }
 }
