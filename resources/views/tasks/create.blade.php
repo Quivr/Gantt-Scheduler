@@ -89,27 +89,6 @@
                         </div>
                         @endif
 
-                        @if(isset($tasks))
-                        <div class="form-group{{ $errors->has('master_task') ? ' has-error' : '' }}">
-                            <label for="master_task" class="col-md-4 control-label">master task</label>
-
-                            <div class="col-md-6">
-                                <select id="master_task" class="form-control" name="master_task">
-                                    <option></option>
-                                    @foreach($tasks as $task)
-                                    <option value="{{$task->id}}">{{$task->title}}</option>
-                                    @endforeach
-                                </select>
-
-                                @if ($errors->has('master_task'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('master_task') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        @endif
-
                         @if(isset($resources))
                         <div class="form-group{{ $errors->has('resource') ? ' has-error' : '' }}">
                             <label for="resource" class="col-md-4 control-label">resource</label>

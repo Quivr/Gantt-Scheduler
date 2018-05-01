@@ -185,7 +185,6 @@ class taskController extends Controller
             'title' => 'required|unique:tasks',
             'startDate' => 'required',
             'endDate' => 'required',
-            'resource' => 'required',
             'department' => 'required',
         ]);
 
