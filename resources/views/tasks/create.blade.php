@@ -131,6 +131,27 @@
                         </div>
                         @endif
 
+                        @if(isset($departments))
+                        <div class="form-group{{ $errors->has('department') ? ' has-error' : '' }}">
+                            <label for="department" class="col-md-4 control-label">department</label>
+
+                            <div class="col-md-6">
+                                <select id="department" class="form-control" name="department">
+                                    <option></option>
+                                    @foreach($departments as $department)
+                                    <option value="{{$department->id}}">{{$department->name}}</option>
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('department'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('department') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

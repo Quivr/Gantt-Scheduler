@@ -32,13 +32,14 @@ class taskController extends Controller
 
         if($request->has('start_date') && $request->has('end_date')){
             $query = $query->whereRaw("(startDate between '".$request->start_date."' and '".$request->end_date."' OR
-            endDate between '".$request->start_date."' and '".$request->end_date."')")
-                           ->with('subTasks','resource');
+            endDate between '".$request->start_date."' and '".$request->end_date."')");
         }
 
         if($request->has('department') && $request->department != -1){
             $query = $query->where('department_id', $request->department);
         }
+
+        $query = $query->with('resource', 'dependencies', 'dependson');
 
         $tasks = $query->get();
 
@@ -47,7 +48,7 @@ class taskController extends Controller
         $cols = [
                 ['id'=>'taskid', 'label'=>'Task ID', 'type'=>'string'], 
                 ['id'=>'Task Name','label'=>'Task Name','type'=>'string'],
-                ['id'=>'Resource', 'label'=>'Resource', 'type'=>'string'],
+                ['id'=>'Resource', 'label'=>'Department', 'type'=>'string'],
                 ['id'=>'Start Date','label'=>'Start Date', 'type'=>'date'],
                 ['id'=>'End Date','label'=>'End Date', 'type'=>'date'],
                 ['id'=>'Duration','label'=>'Duration', 'type'=>'number'],
@@ -57,6 +58,7 @@ class taskController extends Controller
 
 
         $extratasks = [];
+        $extradependson = [];
 
         foreach ($tasks as $task) {
             $startDate = date_parse($task->startDate);
@@ -86,6 +88,11 @@ class taskController extends Controller
             }else{
                 array_push($row['c'], []);
             }
+            if(!empty($task->dependson)){
+                foreach($task->dependson as $dependson){
+                    array_push($extradependson, $dependson);
+                }
+            }
             array_push($rows, $row);
         }
 
@@ -109,6 +116,40 @@ class taskController extends Controller
                 array_push($row['c'], []);
                 array_push($row['c'], ['v'=>$task->percentcomplete]);
                 array_push($row['c'], []);
+                array_push($rows, $row);
+            }
+        }
+
+        foreach($extradependson as $task){
+            if(!$tasks->contains($task->id)){
+                $startDate = date_parse($task->startDate);
+                $startDate['month'] --;
+                $startTime = explode(":",$task->startTime);
+                $endDate = date_parse($task->endDate);
+                $endDate['month'] --;
+                $endTime = explode(":",$task->endTime);
+                $row = ['c'=>[]];
+                array_push($row['c'], ['v'=>$task->id]);
+                array_push($row['c'], ['v'=>$task->title]);
+                if(isset($task->department))
+                    array_push($row['c'], ['v'=>$task->department->name]);
+                else
+                    array_push($row['c'], []);
+                array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
+                array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
+                array_push($row['c'], []);
+                array_push($row['c'], ['v'=>$task->percentcomplete]);
+                if(!empty($task->dependencies)){
+                    $temp = [];
+                    foreach($task->dependencies as $dependency){
+                        if(!$tasks->contains($task->id)){ //only add dependencies on currently filtered tasks
+                            array_push($temp, $dependency->id);
+                        }
+                    }
+                    array_push($row['c'], ['v'=>implode(', ', $temp)]);
+                }else{
+                    array_push($row['c'], []);
+                }
                 array_push($rows, $row);
             }
         }
@@ -144,7 +185,8 @@ class taskController extends Controller
             'title' => 'required|unique:tasks',
             'startDate' => 'required',
             'endDate' => 'required',
-            'resource' => 'required'
+            'resource' => 'required',
+            'department' => 'required',
         ]);
 
         $task = new Task;
