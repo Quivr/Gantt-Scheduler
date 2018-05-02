@@ -32,8 +32,8 @@ class taskController extends Controller
         $query = Task::query();
 
         if($request->has('start_date') && $request->has('end_date')){
-            $query = $query->whereRaw("((startDate between '".$request->start_date."' and '".$request->end_date."') OR
-            (endDate between '".$request->start_date."' and '".$request->end_date."'))");
+            $query = $query->whereRaw("(startDate <= '".$request->end_date."' AND
+            endDate > '".$request->start_date."')");
         }
 
         if($request->has('department') && $request->department != -1){
@@ -100,8 +100,14 @@ class taskController extends Controller
             if(!empty($task->dependencies)){
                 $temp = [];
                 foreach($task->dependencies as $dependency){
-                    array_push($temp, $dependency->id);
-                    array_push($extratasks, $dependency);
+                    $startDate1 = strtotime($request->start_date);
+                    $startDate2 = strtotime($dependency->startDate);
+                    $endDate1 = strtotime($request->end_date);
+                    $endDate2 = strtotime($dependency->endDate);
+                    if($startDate1 <= $endDate2 && $startDate2 <= $endDate1){
+                        array_push($temp, $dependency->id);
+                        array_push($extratasks, $dependency);
+                    }
                 }
                 array_push($row['c'], ['v'=>implode(', ', $temp)]);
             }else{
@@ -109,7 +115,13 @@ class taskController extends Controller
             }
             if(!empty($task->dependson)){
                 foreach($task->dependson as $dependson){
-                    array_push($extradependson, $dependson);
+                    $startDate1 = strtotime($request->start_date);
+                    $startDate2 = strtotime($dependson->startDate);
+                    $endDate1 = strtotime($request->end_date);
+                    $endDate2 = strtotime($dependson->endDate);
+                    if($startDate1 <= $endDate2 && $startDate2 <= $endDate1){
+                        array_push($extradependson, $dependson);
+                    }
                 }
             }
             array_push($rows, $row);
