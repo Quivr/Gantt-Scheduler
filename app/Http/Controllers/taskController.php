@@ -8,6 +8,7 @@ use App\Task;
 use App\User;
 use App\Resource;
 use App\Department;
+use App\Tag;
 use DB;
 
 use App\Http\Requests;
@@ -21,9 +22,9 @@ class taskController extends Controller
      */
     public function index()
     {
-        $resources = Resource::with('tasks')->get();
+        $departments = Department::with('tasks')->get();
         $tasks = Task::orderBy('title')->get();
-        return view('tasks.index', ['resources'=>$resources]);
+        return view('tasks.index', ['resources'=>$departments]);
     }
 
     public function indexData(Request $request){
@@ -31,8 +32,8 @@ class taskController extends Controller
         $query = Task::query();
 
         if($request->has('start_date') && $request->has('end_date')){
-            $query = $query->whereRaw("(startDate between '".$request->start_date."' and '".$request->end_date."' OR
-            endDate between '".$request->start_date."' and '".$request->end_date."')");
+            $query = $query->whereRaw("((startDate between '".$request->start_date."' and '".$request->end_date."') OR
+            (endDate between '".$request->start_date."' and '".$request->end_date."'))");
         }
 
         if($request->has('department') && $request->department != -1){
@@ -70,10 +71,28 @@ class taskController extends Controller
             $row = ['c'=>[]];
             array_push($row['c'], ['v'=>$task->id]);
             array_push($row['c'], ['v'=>$task->title]);
-            if(isset($task->department))
-                array_push($row['c'], ['v'=>$task->department->name]);
-            else
-                array_push($row['c'], []);
+            switch ($request->color) {
+                case "department":
+                    if(isset($task->department))
+                        array_push($row['c'], ['v'=>$task->department->name]);
+                    else
+                        array_push($row['c'], []);
+                    break;
+                case "resource":
+                    if(isset($task->resource))
+                        array_push($row['c'], ['v'=>$task->resource->name]);
+                    else
+                        array_push($row['c'], []);
+                    break;
+                case "tag":
+                    if(isset($task->tag))
+                        array_push($row['c'], ['v'=>$task->tag->name]);
+                    else
+                        array_push($row['c'], []);
+                    break;
+                default:
+                    array_push($row['c'], []);
+            }
             array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
             array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
             array_push($row['c'], []);
@@ -107,10 +126,28 @@ class taskController extends Controller
                 $row = ['c'=>[]];
                 array_push($row['c'], ['v'=>$task->id]);
                 array_push($row['c'], ['v'=>$task->title]);
-                if(isset($task->resource))
-                    array_push($row['c'], ['v'=>$task->resource->name]);
-                else
-                    array_push($row['c'], []);
+                switch ($request->color) {
+                    case "department":
+                        if(isset($task->department))
+                            array_push($row['c'], ['v'=>$task->department->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    case "resource":
+                        if(isset($task->resource))
+                            array_push($row['c'], ['v'=>$task->resource->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    case "tag":
+                        if(isset($task->tag))
+                            array_push($row['c'], ['v'=>$task->tag->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    default:
+                        array_push($row['c'], []);
+                }
                 array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
                 array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
                 array_push($row['c'], []);
@@ -131,10 +168,28 @@ class taskController extends Controller
                 $row = ['c'=>[]];
                 array_push($row['c'], ['v'=>$task->id]);
                 array_push($row['c'], ['v'=>$task->title]);
-                if(isset($task->department))
-                    array_push($row['c'], ['v'=>$task->department->name]);
-                else
-                    array_push($row['c'], []);
+                switch ($request->color) {
+                    case "department":
+                        if(isset($task->department))
+                            array_push($row['c'], ['v'=>$task->department->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    case "resource":
+                        if(isset($task->resource))
+                            array_push($row['c'], ['v'=>$task->resource->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    case "tag":
+                        if(isset($task->tag))
+                            array_push($row['c'], ['v'=>$task->tag->name]);
+                        else
+                            array_push($row['c'], []);
+                        break;
+                    default:
+                        array_push($row['c'], []);
+                }
                 array_push($row['c'], ['v'=>"Date(".$startDate['year'].",".$startDate['month'].",".$startDate['day'].",".$startTime[0].",".$startTime[1].",0,0)"]);
                 array_push($row['c'], ['v'=>"Date(".$endDate['year'].",".$endDate['month'].",".$endDate['day'].",".$endTime[0].",".$endTime[1].",0,0)"]);
                 array_push($row['c'], []);
@@ -170,7 +225,8 @@ class taskController extends Controller
         $users = User::get();
         $resources = Resource::get();
         $departments = Department::get();
-        return view('tasks.create', ['tasks'=>$tasks, 'users'=>$users, 'resources'=>$resources, 'departments'=>$departments]);
+        $tags = Tag::orderBy('name')->get();
+        return view('tasks.create', ['tasks'=>$tasks, 'users'=>$users, 'resources'=>$resources, 'departments'=>$departments, 'tags'=>$tags]);
     }
 
     /**
@@ -217,8 +273,13 @@ class taskController extends Controller
             $task->department()->associate($department);
         }
 
+        if($request->has('tag')){
+            $tag = Tag::findorfail($request->tag);
+            $task->tag()->associate($tag);
+        }
+
         $task->save();
-        return redirect()->route('tasks.show', [$task->id]);
+        return redirect()->route('tasks.edit', [$task->id]);
     }
 
     /**
@@ -243,10 +304,11 @@ class taskController extends Controller
     {
         $task = Task::with('dependencies')->findorfail($id);
         $users = User::get();
-        $tasks = Task::get();
+        $tasks = Task::orderBy('title')->get();
         $resources = Resource::get();
         $departments = Department::get();
-        return view('tasks.edit', ['task'=>$task, 'users'=>$users, 'tasks'=>$tasks, 'resources'=>$resources, 'departments'=>$departments]);
+        $tags = Tag::orderBy('name')->get();
+        return view('tasks.edit', ['task'=>$task, 'users'=>$users, 'tasks'=>$tasks, 'resources'=>$resources, 'departments'=>$departments, 'tags'=>$tags]);
     }
 
     /**
@@ -299,8 +361,13 @@ class taskController extends Controller
             $task->department()->associate($department);
         }
 
+        if($request->has('tag')){
+            $tag = Tag::findorfail($request->tag);
+            $task->tag()->associate($tag);
+        }
+
         $task->save();
-        return redirect()->route('tasks.show', [$task->id]);
+        return redirect()->route('tasks.edit', [$task->id]);
     }
 
     /**

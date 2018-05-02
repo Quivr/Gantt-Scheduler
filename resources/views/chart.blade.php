@@ -16,6 +16,7 @@
     function drawChart() {
 
       var dates = {};
+      dates.color = $('#color').val();
       dates.start_date = $('#start_date').val();
       dates.end_date = $('#end_date').val();
       dates.department = $('#department').val();
@@ -63,16 +64,28 @@
 <?php 
   $date1 = date('Y-m-d');
   $date = new DateTime($date1);
-  $date->add(new DateInterval('P4W')); // P2W means period of 4 weeks
+  $date->sub(new DateInterval('P2W')); // P2W means period of 4 weeks
   $date2 = $date->format('Y-m-d');
+  $date->add(new DateInterval('P6W')); // P2W means period of 4 weeks
+  $date3 = $date->format('Y-m-d');
 ?>
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-9 col-lg-10">
       <div id="chart_div"></div>
     </div>
+
+    
+    
     <div class="col-sm-3 col-lg-2">
       <div class="form-group">
+        <label for="color">Color grouping by</label>
+        <select name="color" id="color" class="form-control">
+          <option value="department">Department</option>
+          <option value="resource">Resource</option>
+          <option value="tag" selected>Tag</option>
+        </select>
+
         <label for="department">Department</label>
         <select name="department" id="department" class="form-control">
           <option value="-1">Show all</option>
@@ -82,10 +95,10 @@
         </select>
         
         <label for="start_date">Start date</label>
-        <input name="start_date" type="date" class="form-control" id="start_date" value="{{$date1}}">
+        <input name="start_date" type="date" class="form-control" id="start_date" value="{{$date2}}">
 
         <label for="end_date">End date</label>
-        <input name="end_date" type="date" class="form-control" id="end_date" value="{{$date2}}">
+        <input name="end_date" type="date" class="form-control" id="end_date" value="{{$date3}}">
 
         <button id="submitbutton" class="btn btn-primary">Send</button>
       </div>

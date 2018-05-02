@@ -34,4 +34,8 @@ class Task extends Model
         return $this->belongsToMany('App\Task','dependson', 'task_id', 'task_dependson_id');
     }
 
+    public function tag(){
+        return $this->belongsTo('App\Tag', 'tag_id');
+    }
+
 }

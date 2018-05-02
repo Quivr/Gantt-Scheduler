@@ -197,6 +197,31 @@
                             </div>
                         </div>
                         @endif
+
+                        @if(isset($tags))
+                        <div class="form-group{{ $errors->has('tag') ? ' has-error' : '' }}">
+                            <label for="tag" class="col-md-4 control-label">tag</label>
+
+                            <div class="col-md-6">
+                                <select id="tag" class="form-control" name="tag">
+                                    <option></option>
+                                    @foreach($tags as $tag)
+                                        @if($task->tag_id == $tag->id)
+                                            <option value="{{$tag->id}}" selected>{{$tag->name}}</option>
+                                        @else
+                                            <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('tag'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('tag') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </form>

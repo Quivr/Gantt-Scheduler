@@ -65,6 +65,13 @@
                                 <li><a href="{{route('departments.create')}}">Create</a></li>
                             </ul>
                         </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tags<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{route('tags.index')}}">Index</a></li>
+                                <li><a href="{{route('tags.create')}}">Create</a></li>
+                            </ul>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
