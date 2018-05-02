@@ -68,6 +68,7 @@
   $date2 = $date->format('Y-m-d');
   $date->add(new DateInterval('P6W')); // P2W means period of 4 weeks
   $date3 = $date->format('Y-m-d');
+  $user = Auth::user();
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -90,7 +91,11 @@
         <select name="department" id="department" class="form-control">
           <option value="-1">Show all</option>
           @foreach ($departments as $department)
+            @if($user->department->id === $department->id)
+            <option value="{{$department->id}}" selected>{{$department->name}}</option>
+            @else
             <option value="{{$department->id}}">{{$department->name}}</option>
+            @endif
           @endforeach
         </select>
         

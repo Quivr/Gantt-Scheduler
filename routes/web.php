@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('departments', 'departmentController');
     Route::resource('tags', 'TagController');
 
+    Route::post('departments/{id}/setAsCurrentDepartment', 'departmentController@setAsCurrentDepartment')->name('setCurrentDepartment');
     Route::post('tasks/{id}/dependency', 'taskController@createDependency')->name('tasks.createDependency');
     Route::delete('dependencies/{id1}/{id2}', 'taskController@destroyDependency')->name('tasks.deleteDependency');
 

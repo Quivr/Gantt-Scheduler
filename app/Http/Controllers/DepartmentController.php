@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Department;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -54,6 +55,15 @@ class DepartmentController extends Controller
     {
         $department = Department::findorfail($id);
         return view('departments.show', ['department'=>$department]);
+    }
+
+    public function setAsCurrentDepartment($id)
+    {
+        $user = Auth::user();
+        $department = Department::findorfail($id);
+        $user->department()->associate($department);
+        $user->save();
+        return redirect()->route('departments.index');
     }
 
     /**

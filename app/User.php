@@ -30,4 +30,8 @@ class User extends Authenticatable
     public function tasks(){
         return $this->hasMany('App\Task', 'manager_id');
     }
+
+    public function department(){
+        return $this->belongsTo('App\Department', 'department_id');
+    }
 }
