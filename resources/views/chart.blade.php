@@ -91,7 +91,7 @@
         <select name="department" id="department" class="form-control">
           <option value="-1">Show all</option>
           @foreach ($departments as $department)
-            @if($user->department->id === $department->id)
+            @if(!is_null($user->department) && ($user->department->id === $department->id))
             <option value="{{$department->id}}" selected>{{$department->name}}</option>
             @else
             <option value="{{$department->id}}">{{$department->name}}</option>

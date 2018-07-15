@@ -11,7 +11,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a href="{{route('departments.show', [$department->id])}}">{{$department->name}}</a>
-                        @if($user->department->id === $department->id)
+                        @if(!is_null($user->department) && ($user->department->id === $department->id))
                             (Current department)
                         @endif
                     </h4>

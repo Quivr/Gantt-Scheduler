@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('tasks', 'taskController');
     Route::resource('users', 'UserController');
     Route::resource('resources', 'resourceController');
-    Route::resource('departments', 'departmentController');
+    Route::resource('departments', 'DepartmentController');
     Route::resource('tags', 'TagController');
 
     Route::post('departments/{id}/setAsCurrentDepartment', 'departmentController@setAsCurrentDepartment')->name('setCurrentDepartment');
