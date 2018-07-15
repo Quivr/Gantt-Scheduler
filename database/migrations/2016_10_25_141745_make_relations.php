@@ -20,7 +20,7 @@ class MakeRelations extends Migration
 
             $table->foreign('manager_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('master_task_id')->references('id')->on('tasks')->onDelete('cascade');
-            $table->foreign('resource_id')->references('id')->on('resource')->onDelete('set null');
+            $table->foreign('resource_id')->references('id')->on('resources')->onDelete('set null');
         });
     }
 
