@@ -72,6 +72,7 @@
                                 <li><a href="{{route('tags.create')}}">Create</a></li>
                             </ul>
                         </li>
+                        <li><a href="{{url('help')}}">Help</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

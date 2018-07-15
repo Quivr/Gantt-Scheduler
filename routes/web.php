@@ -12,11 +12,15 @@
 */
 
 
-Route::get('/', 'HomeController@index')->name('chart');
 Auth::routes();
-Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware' => 'auth'], function () {
+
+    Route::get('/', 'HomeController@index')->name('chart');
+    Route::get('/home', 'HomeController@index');
+    Route::get('/help', function () {
+        return view('uitleg');
+    });
 
     Route::resource('tasks', 'TaskController');
     Route::resource('users', 'UserController');

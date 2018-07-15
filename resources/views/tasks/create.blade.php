@@ -56,7 +56,7 @@
                             <label for="endDate" class="col-md-4 control-label">end date</label>
 
                             <div class="col-md-6">
-                                <input type="date" id="endDate" class="form-control" name="endDate" value="{{ date('Y-m-d') }}">
+                                <input type="date" id="endDate" class="form-control" name="endDate" value="{{ date('Y-m-d', strtotime('+1 week')) }}">
 
                                 @if ($errors->has('endDate'))
                                     <span class="help-block">
