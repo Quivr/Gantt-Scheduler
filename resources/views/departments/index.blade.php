@@ -20,7 +20,7 @@
             <div class="panel-collapse collapse in">
                 <ul class="list-group">
                     <li class="list-group-item"><a href="{{route('departments.show', [$department->id])}}">Show</a></li>
-                    <li class="list-group-item"><a href="{{route('departments.edit', [$department->id])}}">Edit</a></li>
+                    <!-- <li class="list-group-item"><a href="{{route('departments.edit', [$department->id])}}">Edit</a></li> -->
                     <li class="list-group-item">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('setCurrentDepartment', [$department->id])}}">
                             <input type="hidden" name="_method" value="POST">

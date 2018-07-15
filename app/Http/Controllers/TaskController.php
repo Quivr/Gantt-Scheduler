@@ -13,7 +13,7 @@ use DB;
 
 use App\Http\Requests;
 
-class taskController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
